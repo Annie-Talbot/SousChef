@@ -47,17 +47,15 @@ class DatabaseHandler {
   }
 
   Future _onCreate(Database db, int version) async {
-    print("beofre init");
     await db.execute(
       "CREATE TABLE $directoriesTable("
           "$directoriesId INTEGER PRIMARY KEY AUTOINCREMENT, "
           "$directoriesName TEXT NOT NULL, "
           "$directoriesType INTEGER NOT NULL, "
-          "$directoriesParent INTEGER"
+          "$directoriesParent INTEGER "
           "REFERENCES directories(id) ON DELETE CASCADE"
           ")",
     );
-    print("after dires");
     await db.execute(
       "CREATE TABLE $ingredientsTable("
           "$ingredientsId INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -67,10 +65,9 @@ class DatabaseHandler {
           "ON DELETE CASCADE"
           ")",
     );
-    print("after ingre");
     // Insert the root directory
     await db.rawInsert('INSERT INTO $directoriesTable '
-        '("$directoriesId", "$directoriesName", "$directoriesType", "$directoriesParent") '
+        '("$directoriesId", "$directoriesName", "$directoriesType") '
         'VALUES(-1, "Directory 1", ${DirectoryType.ingredient.index})');
 
     // TODO: Remove manual directory inserts
@@ -80,7 +77,6 @@ class DatabaseHandler {
     await db.rawInsert('INSERT INTO $directoriesTable '
         '("$directoriesName", "$directoriesType", "$directoriesParent") '
         'VALUES("Directory 2", ${DirectoryType.ingredient.index}, -1)');
-    print("after add");
   }
 
   Future<int> insertDirectory(List<Directory> dirs) async {
@@ -95,8 +91,8 @@ class DatabaseHandler {
     logger.d("Fetch init");
     final List<Map<String, Object?>> queryResult = await db.query(
       directoriesTable,
-      where: "$directoriesParent = ?",
-      whereArgs: [-1],
+      where: "$directoriesParent = ? AND $directoriesType = ?",
+      whereArgs: [-1, DirectoryType.ingredient.index],
     );
     logger.d("Fetch complete. Data: $queryResult");
     return queryResult.map((d) => Directory.fromMap(d)).toList();
