@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sous_chef/pages/error_page.dart';
-import 'package:sous_chef/pages/ingredient_list_page.dart';
+import 'package:sous_chef/pages/ingredient/ingredient_list_page.dart';
 
 import '../destination.dart';
 import '../pages/empty_cook_page.dart';

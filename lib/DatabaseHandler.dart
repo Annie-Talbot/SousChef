@@ -4,6 +4,8 @@ import 'package:sous_chef/objects/directory.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'objects/ingredient.dart';
+
 class DatabaseHandler {
   final logger = Logger(
       printer: PrettyPrinter(
@@ -94,7 +96,60 @@ class DatabaseHandler {
       where: "$directoriesParent = ? AND $directoriesType = ?",
       whereArgs: [-1, DirectoryType.ingredient.index],
     );
+    List<Directory> dirs = queryResult.map((d) => Directory.fromMap(d)).toList();
+
+    for (Directory d in dirs) {
+      // Fetch children
+      d.addChildren(await fetchChildIngredients(d.id));
+    }
     logger.d("Fetch complete. Data: $queryResult");
-    return queryResult.map((d) => Directory.fromMap(d)).toList();
+    return dirs;
+  }
+
+  Future<List<Ingredient>> fetchChildIngredients(int directory) async {
+    logger.d("Fetch init");
+    final List<Map<String, Object?>> queryResult = await db.query(
+      ingredientsTable,
+      where: "$ingredientsDirectory = ?",
+      whereArgs: [directory],
+    );
+    logger.d("Fetch complete. Data: $queryResult");
+    return queryResult.map((i) => Ingredient.fromMap(i)).toList();
+  }
+
+  Future<int> addRootDirectory(String name, DirectoryType type) async {
+    return await db.rawInsert('INSERT INTO $directoriesTable '
+        '("$directoriesName", "$directoriesParent", "$directoriesType") '
+        'VALUES("$name", -1, ${type.index})');
+  }
+
+  Future<int> deleteDirectory(int directoryId) async {
+    return await db.delete(
+      directoriesTable,
+      where: "$directoriesId = ?",
+      whereArgs: [directoryId]
+    );
+  }
+
+  Future<int> addRawIngredient(String name, int directory) async {
+    return await db.rawInsert('INSERT INTO $ingredientsTable '
+        '("$ingredientsName", "$ingredientsDirectory") '
+        'VALUES("$name", $directory)');
+  }
+
+  Future<int> deleteIngredient(int ingredientId) async {
+    return await db.delete(
+        ingredientsTable,
+        where: "$ingredientsId = ?",
+        whereArgs: [ingredientId]
+    );
+  }
+
+  Future<int> updateDirectory(Directory d) async {
+    return await db.update(
+        directoriesTable,
+        d.toMap(),
+        where: "$directoriesId = ?",
+        whereArgs: [d.id]);
   }
 }

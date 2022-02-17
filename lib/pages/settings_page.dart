@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:settings_ui/settings_ui.dart';
 import '../destination.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool _isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +21,29 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(widget.destination.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-            child: Text("I am the ${widget.destination.title} display.")
-        ),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            title: Text('SECTION 1'),
+            tiles: [
+              SettingsTile(
+                title: Text('Language'),
+                leading: Icon(Icons.language),
+                onPressed: (BuildContext context) {},
+              ),
+              SettingsTile.switchTile(
+                title: Text('Use System Theme'),
+                leading: Icon(Icons.phone_android),
+                onToggle: (value) {
+                  setState(() {
+                    _isSwitched = value;
+                  });
+                },
+                initialValue: _isSwitched,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
