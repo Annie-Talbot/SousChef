@@ -1,8 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sous_chef/DatabaseHandler.dart';
+import 'package:sous_chef/database_handler.dart';
+import 'package:sous_chef/destinations/ingredient_destination.dart';
 import 'package:sous_chef/objects/ingredient.dart';
+import 'package:sous_chef/objects/recipe.dart';
+
+import '../destinations/recipe_destination.dart';
 
 enum DirectoryType {
   ingredient,
@@ -27,29 +31,31 @@ class Directory {
 
   Map<String, Object> toMap() {
     return {
-      'id':id,
-      'name': name,
-      'parent': parent,
-      'type': type.index
+      DatabaseHandler.directoriesId:id,
+      DatabaseHandler.directoriesName: name,
+      DatabaseHandler.directoriesParent: parent,
+      DatabaseHandler.directoriesType: type.index
     };
   }
 
   Directory.fromMap(Map<String, dynamic> map):
-        parent = map['parent'],
-        id = map['id'],
-        name = map['name'],
-        type = DirectoryType.values[map['type']];
+        parent = map[DatabaseHandler.directoriesParent],
+        id = map[DatabaseHandler.directoriesId],
+        name = map[DatabaseHandler.directoriesName],
+        type = DirectoryType.values[map[DatabaseHandler.directoriesType]];
 }
 
 class DirectoryWidget extends StatefulWidget {
   const DirectoryWidget({
     Key? key,
     required this.dir,
-    required this.dbHandler
+    required this.dbHandler,
+    required this.initiateCooking,
   }) : super(key: key);
 
   final Directory dir;
   final DatabaseHandler dbHandler;
+  final Function(Recipe recipe) initiateCooking;
 
   @override
   State<DirectoryWidget> createState() => _DirectoryWidgetState();
@@ -58,7 +64,7 @@ class DirectoryWidget extends StatefulWidget {
 class _DirectoryWidgetState extends State<DirectoryWidget> {
   @override
   Widget build(BuildContext context) {
-    //dbHandler.addRawIngredient("Carrots", dir.id);
+    //widget.dbHandler.addRawIngredient("Carrots", widget.dir.id);
     return Card(
         child: Dismissible(
             key: UniqueKey(),
@@ -71,26 +77,68 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             ),
             child: ExpansionTile(
               controlAffinity: ListTileControlAffinity.leading,
-              trailing: IconButton(
-                icon: Icon(Icons.drive_file_rename_outline),
-                onPressed: () {
-                  createRenameDialog(context, widget.dir);
-                },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    alignment: Alignment.centerRight,
+                    icon: Icon(Icons.drive_file_rename_outline),
+                    onPressed: () {
+                      createRenameDialog(context, widget.dir);
+                    },
+                  ),
+                  IconButton(
+                    alignment: Alignment.centerRight,
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      if (widget.dir.type == DirectoryType.ingredient ) {
+                        Navigator.of(context).pushNamed(
+                            IngredientRoutes.detail,
+                            arguments: IngredientParcel(
+                              isExisting: false,
+                              dirId: widget.dir.id,
+                            )
+                        );
+                      } else {
+                        Navigator.of(context).pushNamed(
+                            RecipeRoutes.detail,
+                            arguments: RecipeParcel(
+                              isExisting: false,
+                              dirId: widget.dir.id,
+                            )
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
               title: Text(
                 widget.dir.name,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              children: widget.dir.children.map(
-                      (child) => IngredientWidget(
-                          ingredient: child,
-                          dbHandler: widget.dbHandler)).toList(),
+              children: createChildList(context, widget.dir),
             ),
             onDismissed: (DismissDirection direction) async {
               await widget.dbHandler.deleteDirectory(widget.dir.id);
             },
         )
       );
+  }
+
+  createChildList(BuildContext context, Directory d) {
+    if (d.type == DirectoryType.ingredient) {
+      return d.children.map(
+              (child) => IngredientWidget(
+              ingredient: child,
+              dbHandler: widget.dbHandler)).toList();
+    } else {
+      return d.children.map(
+              (child) => RecipeWidget(
+              recipe: child,
+              dbHandler: widget.dbHandler,
+              initiateCooking: widget.initiateCooking)).toList();
+    }
   }
 
   createRenameDialog(BuildContext context, Directory d) {

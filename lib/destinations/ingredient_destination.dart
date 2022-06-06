@@ -4,20 +4,26 @@ import 'package:sous_chef/pages/error_page.dart';
 import 'package:sous_chef/pages/ingredient/ingredient_list_page.dart';
 
 import '../destination.dart';
+import '../objects/recipe.dart';
 import '../pages/ingredient/ingredient_detail_page.dart';
 
+class IngredientRoutes {
+  static const String list = "/";
+  static const String detail = "/detail";
+}
+
 class IngredientDestination extends Destination{
-  const IngredientDestination(String title, IconData icon) : super(title, icon);
+  IngredientDestination(String title, IconData icon) : super(title, icon);
 
   @override
   Widget Function(BuildContext) routeBuilder(BuildContext context,
-      RouteSettings settings) {
+      RouteSettings settings, Function(Recipe recipe) initiateCooking) {
     return (context) {
       switch (settings.name) {
-        case '/':
-          return IngredientListPage(destination: this, key: UniqueKey(),);
-        case '/detail':
-          return IngredientDetailPage(Ingredient(id:1, name:"dave", directory:1), key: UniqueKey(), destination: this);
+        case IngredientRoutes.list:
+          return IngredientListPage(destination: this, key: UniqueKey(), initiateCooking: initiateCooking);
+        case IngredientRoutes.detail:
+          return IngredientDetailPage(key: UniqueKey(), destination: this);
         default:
           return ErrorPage(key: UniqueKey());
       }
