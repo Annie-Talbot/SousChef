@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sous_chef/objects/recipe_on_stove.dart';
 import '../destination.dart';
+import '../objects/method_on_stove.dart';
 import '../objects/recipe.dart';
 
 class EmptyCookPage extends StatefulWidget {
@@ -17,7 +19,7 @@ class EmptyCookPage extends StatefulWidget {
 
 class _EmptyCookPageState extends State<EmptyCookPage> {
   bool _cooking = false;
-  Recipe? _recipeOnStove;
+  RecipeOnStove? _recipeOnStove;
 
   updateStove() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,7 +30,7 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
       // Cooking is in progress
       // Update cooking variables
       _cooking = true;
-      _recipeOnStove = Recipe.fromMap(
+      _recipeOnStove = RecipeOnStove.fromMap(
           json.decode(prefs.getString("recipe")!)
       );
       setState(() {
@@ -79,31 +81,10 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
   }
   
   Widget buildCookingWidget() {
-      return Card(
-        margin: EdgeInsets.all(12.0),
-        elevation: 10.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                _recipeOnStove!.name,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                ),
-              ),
-              Text(_recipeOnStove!.ingredients)
-            ],
-          ),
-        ),
-      );
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: createMethodWidgets()
+    );
   }
 
   createConcernDialog(BuildContext context) {
@@ -152,7 +133,7 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
               createConcernDialog(context);
             },
             child: Icon(
-              Icons.add,
+              Icons.cancel_outlined,
               size: 28.0,
             ),
           )
@@ -183,6 +164,14 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
           ),
         ),
       );
+
+  List<Widget> createMethodWidgets() {
+    List<Widget> methods = [];
+    for (MethodOnStove m in _recipeOnStove!.method) {
+      methods.add(MethodOnStoveWidget(method: m));
+    }
+    return methods;
+  }
 
 
 

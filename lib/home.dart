@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sous_chef/objects/recipe_on_stove.dart';
 
 import 'destination.dart';
 import 'objects/recipe.dart';
@@ -23,7 +24,7 @@ class _HomeState extends State<Home> {
   Future<void> initiateCooking(Recipe recipe) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("cooking", true);
-    prefs.setString("recipe", json.encode(recipe.toMap()));
+    prefs.setString("recipe", json.encode(RecipeOnStove(recipe).toMap()));
     setState(() {
       setIndex(2);
     });
