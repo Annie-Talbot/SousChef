@@ -14,10 +14,10 @@ class Destination {
 
   final String title;
   final IconData icon;
-  late Function(Recipe recipe) initiateCooking;
+  late Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
 
   Widget Function(BuildContext) routeBuilder(BuildContext context,
-      RouteSettings settings, Function(Recipe recipe) initiateCooking) {
+      RouteSettings settings, Function(Recipe recipe, TimeOfDay eatTime) initiateCooking) {
     this.initiateCooking = initiateCooking;
     return (context) {
           return ErrorPage(key: UniqueKey());
@@ -27,10 +27,10 @@ class Destination {
 
 class DestinationView extends StatefulWidget {
   const DestinationView({ required Key key, required this.destination,
-                          required void Function(Recipe recipe) this.initiateCooking }) : super(key: key);
+                          required void Function(Recipe recipe, TimeOfDay eatTime) this.initiateCooking }) : super(key: key);
 
   final Destination destination;
-  final Function(Recipe recipe) initiateCooking;
+  final Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
 
   @override
   _DestinationViewState createState() => _DestinationViewState();
@@ -43,7 +43,6 @@ class _DestinationViewState extends State<DestinationView> {
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           settings: settings,
-          //TODO: Pass in goto page function here
           builder: widget.destination.routeBuilder(context, settings, widget.initiateCooking),
         );
       },

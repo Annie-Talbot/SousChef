@@ -81,10 +81,27 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
   }
   
   Widget buildCookingWidget() {
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: createMethodWidgets()
-    );
+      return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildTitleWidget(),
+            Divider(),
+            buildSubheadingWidget("Ingredients"),
+            Text(
+              _recipeOnStove!.ingredients,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Divider(),
+            buildSubheadingWidget("Method"),
+            Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: createMethodWidgets()
+            ),
+          ]
+        ),
+      );
   }
 
   createConcernDialog(BuildContext context) {
@@ -161,5 +178,21 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
   }
 
 
+
+  Widget buildTitleWidget() => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
+    child: Text(
+      _recipeOnStove!.name,
+      style: Theme.of(context).textTheme.titleLarge,
+    ),
+  );
+
+  Widget buildSubheadingWidget(String headingText) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
+    child: Text(
+      headingText,
+      style: Theme.of(context).textTheme.headlineMedium,
+    ),
+  );
 
 }

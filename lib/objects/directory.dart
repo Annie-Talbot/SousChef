@@ -56,7 +56,7 @@ class DirectoryWidget extends StatefulWidget {
 
   final Directory dir;
   final DatabaseHandler dbHandler;
-  final Function(Recipe recipe) initiateCooking;
+  final Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
 
   @override
   State<DirectoryWidget> createState() => _DirectoryWidgetState();
@@ -149,14 +149,14 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Rename"),
+            title: const Text("Rename"),
             content: TextField(
               controller: ctrl,
             ),
             actions: <Widget>[
               MaterialButton(
                 elevation: 5.0,
-                child: Text("Rename"),
+                child: const Text("Rename"),
                 onPressed: () {
                   setState(() {
                     d.name = ctrl.text.toString();

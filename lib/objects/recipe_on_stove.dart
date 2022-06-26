@@ -1,6 +1,8 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sous_chef/objects/method_on_stove.dart';
 
 import 'method.dart';
@@ -9,33 +11,45 @@ import 'recipe.dart';
 class RecipeOnStove {
   String name = "Recipe";
   String ingredients = "Ingredients List";
+  TimeOfDay eatTime = TimeOfDay.now();
   List<MethodOnStove> method = [];
 
-  RecipeOnStove(Recipe r) {
+  RecipeOnStove(Recipe r, this.eatTime) {
     name = r.name;
     ingredients = r.ingredients;
-    int counter = 0;
-    for (Method m in r.method) {
-      int startTime = 19 + counter;
-      method.add(
-          MethodOnStove(method: m, done: false, startTime: startTime));
-      counter ++;
+    int totalTime = 0;
+    List<MethodOnStove> tempList = [];
+    for (Method m in r.method.reversed) {
+      tempList.add(
+          MethodOnStove.fromMethod(method: m, eatTime: eatTime, timeTaken: totalTime));
+      totalTime += m.duration;
+    }
+    // Reverse the list
+    for (MethodOnStove m in tempList.reversed) {
+      method.add(m);
     }
   }
 
   RecipeOnStove.restore({required this.name, required this.ingredients,
-                          required this.method});
+                          required this.method, required this.eatTime});
 
   Map<String, Object> toMap() {
     List<Map<String, Object>> methodMap = [];
     for (MethodOnStove m in method) {
       methodMap.add(m.toMap());
     }
-    return {
+    // Turn date to string
+    String dateString = DateFormat("HH:mm").format(DateTime(2000,
+        1, 1, eatTime.hour, eatTime.minute));
+
+    Map<String, Object> map = {
       "name": name,
       "ingredients": ingredients,
-      "method": methodMap
+      "method": methodMap,
+      "eatTime": dateString,
     };
+    print(map);
+    return map;
   }
 
   RecipeOnStove.fromMap(Map<String, dynamic> res) {
@@ -46,5 +60,9 @@ class RecipeOnStove {
     name = res["name"];
     ingredients = res["ingredients"];
     method = methods;
+    
+    // Time string is in format "TimeOfDay(HH:MM)"
+    // Extracting time values
+    eatTime = TimeOfDay.fromDateTime(DateFormat("HH:mm").parse(res["eatTime"]));
   }
 }

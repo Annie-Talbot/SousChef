@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sous_chef/database_handler.dart';
 import 'package:sous_chef/objects/method.dart';
 import 'package:sous_chef/theme_manager.dart';
@@ -15,7 +16,7 @@ class MethodOnStove {
   static String methodOrderKey = "orderKey";
 
   bool done;
-  int startTime;
+  String startTime;
   int duration;
   String description;
   int orderKey;
@@ -25,6 +26,15 @@ class MethodOnStove {
                   required this.startTime}) : description = method.description,
                                               duration = method.duration,
                                               orderKey = method.orderKey;
+
+
+  MethodOnStove.fromMethod({required Method method,
+    required TimeOfDay eatTime, required int timeTaken}) :
+        done = false,
+        duration = method.duration,
+        description = method.description,
+        orderKey = method.orderKey,
+        startTime = calculateStartTime(eatTime, method.duration, timeTaken);
 
   Map<String, Object> toMap() {
     return {
@@ -42,6 +52,26 @@ class MethodOnStove {
       duration = res[MethodOnStove.methodDuration],
       description = res[MethodOnStove.methodDescription],
       orderKey = res[MethodOnStove.methodOrderKey];
+
+
+  static String calculateStartTime(TimeOfDay eatTime, int duration,
+      int timeTaken) {
+    duration += timeTaken;
+    int hours = eatTime.hour;
+    int minutes = eatTime.minute;
+
+    while(duration > 0) {
+      if (minutes >= duration) {
+        minutes -= duration;
+        break;
+      }
+      // Subtracting an hour
+      hours = hours > 0 ? hours - 1 : 23;
+      duration -= minutes;
+      minutes = 59;
+    }
+    return "$hours:$minutes";
+  }
 }
 
 

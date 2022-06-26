@@ -36,6 +36,7 @@ dependencies:
   auto_size_text_field: ^1.0.1
   shared_preferences:
   provider:
+  intl: ^0.17.0
 
 
   # The following adds the Cupertino Icons font to your application.

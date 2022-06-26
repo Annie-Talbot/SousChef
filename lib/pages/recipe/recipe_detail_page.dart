@@ -137,14 +137,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     }
                 ),
               ),
-              IconButton(
-                color: Theme.of(context).colorScheme.primary,
+              ElevatedButton.icon(
                 onPressed: () {
                   appendInstructions([["New instruction", "10"]]);
                 },
                 icon: const Icon(
                   Icons.add,
-                ),
+                ), label: const Text("Add Instruction"),
               ),
             ],
           ),

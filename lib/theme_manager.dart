@@ -13,7 +13,7 @@ class ThemeNotifier with ChangeNotifier {
   final darkTheme = ThemeData(
     brightness: Brightness.dark,
     cardTheme: CardTheme(
-      margin: EdgeInsets.all(12.0),
+      margin: const EdgeInsets.all(12.0),
       elevation: 10.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -35,7 +35,7 @@ class ThemeNotifier with ChangeNotifier {
       style: ButtonStyle(
         foregroundColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
           if (states.contains(MaterialState.hovered)) return mediumGreen;
-          return darkGreen;
+          return lightGreen;
         }),
       ),
     ),
@@ -60,11 +60,6 @@ class ThemeNotifier with ChangeNotifier {
           color: white,
         )
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      elevation: 24.0,
-      backgroundColor: veryLightGreen,
-      foregroundColor: darkGreen,
-    ),
     dividerTheme: const DividerThemeData(
       color: veryLightGreen,
       thickness: 2.0,
@@ -82,6 +77,25 @@ class ThemeNotifier with ChangeNotifier {
       style: ListTileStyle.drawer,
       selectedTileColor: darkGreen,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(),),
+    ),
+    timePickerTheme: TimePickerThemeData(
+      dayPeriodColor: MaterialStateColor.resolveWith((states) =>
+        states.contains(MaterialState.selected) ? darkGreen : Colors.white10),
+      dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
+        states.contains(MaterialState.selected) ? lightGreen : white),
+      dialBackgroundColor: Colors.white24,
+      dialTextColor: white,
+      dialHandColor: lightGreen,
+      hourMinuteColor: MaterialStateColor.resolveWith((states) =>
+        states.contains(MaterialState.selected) ? darkGreen : Colors.white24),
+      hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
+        states.contains(MaterialState.selected) ? lightGreen : white),
+      helpTextStyle: TextStyle(
+        color: white,
+        fontSize: 18.0,
+        fontWeight: FontWeight.bold
+      )
+
     ),
   );
 

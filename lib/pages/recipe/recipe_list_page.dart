@@ -7,9 +7,9 @@ import '../../objects/directory.dart';
 
 class RecipeListPage extends StatefulWidget {
   const RecipeListPage({ required Key key, required this.destination,
-    required Function(Recipe recipe) this.initiateCooking}) : super(key: key);
+    required Function(Recipe recipe, TimeOfDay eatTime) this.initiateCooking}) : super(key: key);
 
-  final Function(Recipe recipe) initiateCooking;
+  final Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
   final Destination destination;
 
   @override

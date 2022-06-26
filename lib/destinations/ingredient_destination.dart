@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:sous_chef/objects/ingredient.dart';
 import 'package:sous_chef/pages/error_page.dart';
 import 'package:sous_chef/pages/ingredient/ingredient_list_page.dart';
@@ -17,7 +18,8 @@ class IngredientDestination extends Destination{
 
   @override
   Widget Function(BuildContext) routeBuilder(BuildContext context,
-      RouteSettings settings, Function(Recipe recipe) initiateCooking) {
+      RouteSettings settings,
+      Function(Recipe recipe, TimeOfDay eatTime) initiateCooking) {
     return (context) {
       switch (settings.name) {
         case IngredientRoutes.list:

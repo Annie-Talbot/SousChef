@@ -70,7 +70,7 @@ class RecipeWidget extends StatelessWidget {
 
   final Recipe recipe;
   final DatabaseHandler dbHandler;
-  final Function(Recipe recipe) initiateCooking;
+  final Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,16 @@ class RecipeWidget extends StatelessWidget {
         title: Text(recipe.name),
         trailing: ElevatedButton.icon(
           onPressed: () async {
-            initiateCooking(recipe);
+            TimeOfDay? eatTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+              helpText: "What time would you like to eat?",
+              confirmText: "Let's cook!",
+              cancelText: "Cancel",
+            );
+            if (eatTime != null) {
+              await initiateCooking(recipe, eatTime);
+            }
             },
           icon: const Icon(Icons.local_dining_outlined),
           label: const Text("Cook!"),
@@ -106,6 +115,7 @@ class RecipeWidget extends StatelessWidget {
       },
     );
   }
+
 }
 
 class RecipeParcel {

@@ -21,10 +21,10 @@ class _HomeState extends State<Home> {
   void setIndex(int newIndex) {
       _currentIndex = newIndex;
   }
-  Future<void> initiateCooking(Recipe recipe) async {
+  Future<void> initiateCooking(Recipe recipe, TimeOfDay eatTime) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("cooking", true);
-    prefs.setString("recipe", json.encode(RecipeOnStove(recipe).toMap()));
+    prefs.setString("recipe", json.encode(RecipeOnStove(recipe, eatTime).toMap()));
     setState(() {
       setIndex(2);
     });
@@ -35,13 +35,7 @@ class _HomeState extends State<Home> {
     super.initState();
     Future.delayed(Duration.zero, () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.containsKey("cooking")) {
-        if (prefs.getBool("cooking") == true) {
-          initiateCooking(
-              Recipe.fromMap(json.decode(prefs.getString("recipe")!))
-          );
-        }
-      } else {
+      if (!prefs.containsKey("cooking")) {
         prefs.setBool("cooking", false);
       }
     });

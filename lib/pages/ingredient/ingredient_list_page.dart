@@ -6,10 +6,13 @@ import 'package:sous_chef/objects/recipe.dart';
 import '../../destination.dart';
 
 class IngredientListPage extends StatefulWidget {
-  const IngredientListPage({ required Key key, required this.destination, required Function(Recipe recipe) this.initiateCooking }) : super(key: key);
+  const IngredientListPage({ required Key key,
+    required this.destination,
+    required Function(Recipe recipe,
+        TimeOfDay eatTime) this.initiateCooking }) : super(key: key);
 
   final Destination destination;
-  final Function(Recipe recipe) initiateCooking;
+  final Function(Recipe recipe, TimeOfDay eatTime) initiateCooking;
 
   @override
   _IngredientListPageState createState() => _IngredientListPageState();
