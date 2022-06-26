@@ -26,7 +26,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   List<TextEditingController> descriptionFields = [];
   List<TextEditingController> durationFields = [];
   TextEditingController nameCtrlr = TextEditingController(text: "bah");
-  FloatingActionButton saveBtn = FloatingActionButton(onPressed: () {});
+  IconButton saveBtn = IconButton(onPressed: () {}, icon: Icon(Icons.save),);
 
   appendInstructions(instructions) {
     setState(() {
@@ -84,22 +84,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     return Scaffold(
       appBar: buildAppBar(),
       body: Card(
-          margin: EdgeInsets.all(12.0),
-          elevation: 10.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2.0,
-              ),
-              borderRadius: const BorderRadius.all(
-                  Radius.circular(12.0),
-              ),
-            ),
-            child: Column(
+          margin: const EdgeInsets.all(12.0),
+          child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 buildTitle(nameCtrlr),
@@ -140,88 +126,85 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                     }
                   ),
                 ),
-                IconButton(
-                  color: Theme.of(context).colorScheme.primary,
+                ElevatedButton.icon(
                   onPressed: () {
                     appendInstructions([["New instruction", "10"]]);
                   },
                   icon: const Icon(
                     Icons.add,
                   ),
+                  label: const Text("Add Instruction"),
                 ),
               ],
             ),
           ),
-        ),
-      floatingActionButton: saveBtn,
-
     );
   }
 
   AppBar buildAppBar() => AppBar(
     title: Text(widget.destination.title),
+    actions: [
+      saveBtn
+    ],
   );
 
   Widget buildTitle(TextEditingController ctrlr) =>
     Padding(
-      padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 48.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 48.0),
       child: TextField(
         controller: ctrlr,
-        decoration: InputDecoration(hintText: 'Honey Roasted Carrots'),
+        decoration: const InputDecoration(hintText: 'Honey Roasted Carrots'),
         textAlign: TextAlign.center,
       ),
     );
 
-  Widget buildDivider(double height) => Divider(
-    height: height,
-    color: Theme.of(context).colorScheme.primary,
-    thickness: 1.0,
-  );
+  Widget buildDivider(double height) => Divider();
 
-  Widget buildListHeader() => ListTile(
-    title: Text(
-      "Instruction",
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.bold,
-        fontSize: 16.0,
-      ),
-    ),
-    trailing: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-      child: Icon(
-        Icons.timer,
-        color: Theme.of(context).colorScheme.primary,
-      ),
+  Widget buildListHeader() => Padding(
+    padding: const EdgeInsets.fromLTRB(12.0, 16.0, 12.0, 4.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Instruction",
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+          child: Icon(
+            Icons.timer,
+          ),
+        ),
+      ],
     ),
   );
 
-  FloatingActionButton buildSaveNewButton(
+  IconButton buildSaveNewButton(
       DatabaseHandler dbHandler,
       TextEditingController nameCtrlr,
-      IngredientParcel parcel) => FloatingActionButton(
+      IngredientParcel parcel) => IconButton(
         onPressed: () {
           Future<int> id = dbHandler.insertIngredient(Ingredient.createIngredientInsert(
               name: nameCtrlr.text.toString(),
               directory: parcel.dirId), gatherInstructions());
           Navigator.pushNamed(context, IngredientRoutes.list);
         },
-        child: getSaveIcon(),
+        icon: getSaveIcon(),
   );
 
-  FloatingActionButton buildSaveExistingButton(
+  IconButton buildSaveExistingButton(
       DatabaseHandler dbHandler,
       TextEditingController nameCtrlr,
-      Ingredient ingredient) => FloatingActionButton(
+      Ingredient ingredient) => IconButton(
         onPressed: () {
           ingredient.name = nameCtrlr.text.toString();
           dbHandler.updateIngredient(ingredient, gatherInstructions());
           Navigator.pushNamed(context, IngredientRoutes.list);
         },
-        child: getSaveIcon(),
+        icon: getSaveIcon(),
   );
 
-  Icon getSaveIcon() => const Icon(Icons.check);
+  Icon getSaveIcon() => const Icon(Icons.save);
 
 
   List<List<String>> gatherInstructions() {

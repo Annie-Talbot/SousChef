@@ -26,7 +26,8 @@ class Destination {
 }
 
 class DestinationView extends StatefulWidget {
-  const DestinationView({ required Key key, required this.destination, required void Function(Recipe recipe) this.initiateCooking }) : super(key: key);
+  const DestinationView({ required Key key, required this.destination,
+                          required void Function(Recipe recipe) this.initiateCooking }) : super(key: key);
 
   final Destination destination;
   final Function(Recipe recipe) initiateCooking;

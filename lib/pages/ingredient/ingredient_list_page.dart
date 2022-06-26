@@ -31,19 +31,17 @@ class _IngredientListPageState extends State<IngredientListPage> {
       appBar: AppBar(
         title: Text(widget.destination.title),
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
+            IconButton(
+              padding: EdgeInsets.only(right: 20.0),
+              onPressed: () {
                 creteAlertDialog(context);
               },
-              child: Icon(
+              icon: Icon(
                 Icons.add,
                 size: 28.0,
               ),
-            )
-          ),
-        ]
+            ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

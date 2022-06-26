@@ -66,7 +66,6 @@ class _HomeState extends State<Home> {
         items: allDestinations.map((Destination destination) {
           return BottomNavigationBarItem(
               icon: Icon(destination.icon),
-              backgroundColor: Theme.of(context).colorScheme.primary,
               label: destination.title
           );
         }).toList(),

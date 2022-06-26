@@ -93,24 +93,20 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Are you sure you want to exit cooking?",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            content: Text("All progress will be lost."),
+            content: const Text("All progress will be lost."),
             actions: <Widget>[
               MaterialButton(
                 elevation: 5.0,
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
                 onPressed: () {
                     Navigator.of(context).pop();
                 },
               ),
               MaterialButton(
                 elevation: 5.0,
-                child: Text("Remove current recipe"),
+                child: const Text("Remove current recipe"),
                 onPressed: () async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setBool("cooking", false);
@@ -141,25 +137,16 @@ class _EmptyCookPageState extends State<EmptyCookPage> {
 
   buildNotCookingWidget() =>
       Card(
-        margin: EdgeInsets.all(12.0),
-        elevation: 10.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Nothing on the stove!",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                ),
+              Text("Nothing's on the stove!",
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-              Text("Go to the recipes tab to select a recipe to cook.")
+              const Text("Go to the recipes tab to select a recipe to cook.")
             ],
           ),
         ),

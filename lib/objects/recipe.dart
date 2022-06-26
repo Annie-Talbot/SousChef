@@ -80,28 +80,17 @@ class RecipeWidget extends StatelessWidget {
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child: Icon(Icons.delete_forever),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: const Icon(Icons.delete_forever),
       ),
       child: ListTile(
         title: Text(recipe.name),
-        trailing: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(8.0),
-              ),
-            ),
-            child: IconButton(
-              color: Theme.of(context).colorScheme.onBackground,
-              onPressed: () async {
-                initiateCooking(recipe);
-              },
-              icon: const Icon(Icons.local_dining_outlined),
-            ),
-          ),
+        trailing: ElevatedButton.icon(
+          onPressed: () async {
+            initiateCooking(recipe);
+            },
+          icon: const Icon(Icons.local_dining_outlined),
+          label: const Text("Cook!"),
         ),
         onTap: () {
           Navigator.pushNamed(

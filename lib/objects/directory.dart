@@ -7,6 +7,7 @@ import 'package:sous_chef/objects/ingredient.dart';
 import 'package:sous_chef/objects/recipe.dart';
 
 import '../destinations/recipe_destination.dart';
+import '../theme_manager.dart';
 
 enum DirectoryType {
   ingredient,
@@ -70,12 +71,14 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             key: UniqueKey(),
             direction: DismissDirection.endToStart,
             background: Container(
-              color: Colors.red,
+              color: ThemeNotifier.error,
               alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Icon(Icons.delete_forever),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: const Icon(Icons.delete_forever),
             ),
             child: ExpansionTile(
+              iconColor: ThemeNotifier.mediumGreen,
+              textColor: ThemeNotifier.mediumGreen,
               controlAffinity: ListTileControlAffinity.leading,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -83,7 +86,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                 children: [
                   IconButton(
                     alignment: Alignment.centerRight,
-                    icon: Icon(Icons.drive_file_rename_outline),
+                    icon: const Icon(Icons.drive_file_rename_outline),
                     onPressed: () {
                       createRenameDialog(context, widget.dir);
                     },
@@ -115,7 +118,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
               ),
               title: Text(
                 widget.dir.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               children: createChildList(context, widget.dir),
             ),

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sous_chef/database_handler.dart';
 import 'package:sous_chef/objects/method.dart';
+import 'package:sous_chef/theme_manager.dart';
 
 class MethodOnStove {
 
@@ -45,7 +46,7 @@ class MethodOnStove {
 
 
 
-class MethodOnStoveWidget extends StatelessWidget {
+class MethodOnStoveWidget extends StatefulWidget {
   const MethodOnStoveWidget({
     Key? key,
     required this.method
@@ -54,13 +55,18 @@ class MethodOnStoveWidget extends StatelessWidget {
   final MethodOnStove method;
 
   @override
+  State<MethodOnStoveWidget> createState() => _MethodOnStoveWidgetState();
+}
+
+class _MethodOnStoveWidgetState extends State<MethodOnStoveWidget> {
+  Color _cardColor = ThemeNotifier.darkGreen;
+
+
+  @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(12.0),
-      elevation: 10.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      color: getCardColor(widget.method.done),
+      margin: const EdgeInsets.all(12.0),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Row(
@@ -68,21 +74,29 @@ class MethodOnStoveWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              method.startTime.toString(),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
+              widget.method.startTime.toString(),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Text(method.description),
+            Text(widget.method.description),
             Checkbox(
-                value: method.done,
-                onChanged: //TODO
-                    (done) {})
+                value: widget.method.done,
+                onChanged: (done) {
+                  setState(() {
+                    widget.method.done = done!;
+                  });
+
+                })
           ],
         ),
       ),
     );
+  }
+
+  Color getCardColor(bool done) {
+    if (done) {
+      return Theme.of(context).backgroundColor;
+    } else {
+      return ThemeNotifier.mediumGreen;
+    }
   }
 }
